@@ -12,34 +12,61 @@ function createCrystal(initialW, initialH){
             var x=500, y=500, w=initialW, h=initialH; //Pretty random start pos
             var sizes=[]; sizes.push({"w":w, "h":h});
 
-            if(document.getElementById("type").value=="stellar"){
+            var p;
+            var type;
+            if(document.getElementById("type").value=="random"){
+                p=Math.random();
+                if(p>0.5){
+                    type="dendrites";
+                }else if (p>0.1){
+                    type="stellar";
+                }else{
+                    type="decorations";
+                }
+            }else{
+                type=document.getElementById("type").value;
+            }
+
+            var shape;
+            if(document.getElementById("shape").value=="random"){
+                p=Math.random();
+                if(p>0.5){
+                    shape="hexagon";
+                }else{
+                    shape="star";
+                }
+            }else{
+                shape=document.getElementById("shape").value;
+            }
+
+            if(type=="stellar"){
                 for(i=0;i<iterations;i++){
                     w=Math.floor(rand(w/3,w/2)); h=Math.floor(rand(h/3,h/2));
                     sizes.push({"w":w,"h":h});
                 }
-                if(document.getElementById("shape").value=="hexagon"){
+                if(shape=="hexagon"){
                     stellar(x,y,sizes,0,iterations, "FFFFFF");
-                }else if(document.getElementById("shape").value=="star"){
+                }else if(shape=="star"){
                     stellarStar4(x,y,sizes,0,iterations, "FFFFFF");
                 }
-            }else if(document.getElementById("type").value=="decorations"){
+            }else if(type=="decorations"){
                 for(i=0;i<iterations;i++){
                     w=Math.floor(rand(w/10,w/5)); h=Math.floor(rand(h/3,h/2)); //Up to h*2 for crazy stuff
                     sizes.push({"w":w,"h":h});
                 }
-                if(document.getElementById("shape").value=="hexagon"){
+                if(shape=="hexagon"){
                     decorations(x,y,sizes,0,iterations, "FFFFFF", 0);
                 }else if(document.getElementById("shape").value=="star"){
                     decorationsStar4(x,y,sizes,0,iterations, "FFFFFF", 0);
                 }
-            }else if(document.getElementById("type").value=="dendrites"){
+            }else if(type=="dendrites"){
                 for(i=0;i<iterations;i++){
                     w=Math.floor(rand(w/5,w/3)); h=Math.floor(rand(h/3,h/2)); //Up to h*2 for crazy stuff
                     sizes.push({"w":w,"h":h});
                 }
-                if(document.getElementById("shape").value=="hexagon"){
+                if(shape=="hexagon"){
                     dendrites(x,y,sizes,0,iterations, "FFFFFF", 0);
-                }else if(document.getElementById("shape").value=="star"){
+                }else if(shape=="star"){
                     dendritesStar4(x,y,sizes,0,iterations, "FFFFFF", 0);
                 }
             }
