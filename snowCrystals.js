@@ -239,6 +239,28 @@ function createCrystal(initialW, initialH){
             ctx.fill();
         }
 
+        function drawStarN(x,y,w,h,n,color){
+            var ctx=document.getElementById("canvas").getContext("2d");
+            var rotation=360/n;
+            for(i=0;i<n;i++){
+                ctx.translate(x, y);
+                ctx.rotate(rotation*Math.PI/180);
+                ctx.translate(-x, -y);
+                drawTriangle(x,y,w,h,color);
+            }
+        }
+
+        function drawTriangle(x,y,w,h,color){ //x,y on lower left corner
+            var ctx=document.getElementById("canvas").getContext("2d");
+            ctx.fillStyle=color;
+            ctx.beginPath();
+            ctx.moveTo(x-w/2, y);
+            ctx.lineTo(x+w/2, y);
+            ctx.lineTo(x, y-h);
+            ctx.closePath();
+            ctx.fill();
+        }
+
         function rand(a, b) {
             return a + Math.floor(Math.random() * (b - a + 1));
         }
