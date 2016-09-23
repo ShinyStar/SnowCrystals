@@ -14,62 +14,68 @@ function createCrystal(initialW, initialH){
 
             var p;
             var type;
-            if(document.getElementById("type").value=="random"){
-                p=Math.random();
-                if(p>0.5){
-                    type="dendrites";
-                }else if (p>0.1){
-                    type="stellar";
-                }else{
-                    type="decorations";
-                }
-            }else{
-                type=document.getElementById("type").value;
-            }
-
-            var shape;
-            if(document.getElementById("shape").value=="random"){
-                p=Math.random();
-                if(p>0.5){
-                    shape="hexagon";
-                }else{
-                    shape="star";
-                }
-            }else{
-                shape=document.getElementById("shape").value;
-            }
-
-            if(type=="stellar"){
-                for(i=0;i<iterations;i++){
+            for(i=0;i<iterations;i++){
                     w=Math.floor(rand(w/3,w/2)); h=Math.floor(rand(h/3,h/2));
                     sizes.push({"w":w,"h":h});
                 }
-                if(shape=="hexagon"){
-                    stellar(x,y,sizes,0,iterations, "FFFFFF");
-                }else if(shape=="star"){
-                    stellarStar4(x,y,sizes,0,iterations, "FFFFFF");
-                }
-            }else if(type=="decorations"){
-                for(i=0;i<iterations;i++){
-                    w=Math.floor(rand(w/10,w/5)); h=Math.floor(rand(h/3,h/2)); //Up to h*2 for crazy stuff
-                    sizes.push({"w":w,"h":h});
-                }
-                if(shape=="hexagon"){
-                    decorations(x,y,sizes,0,iterations, "FFFFFF", 0);
-                }else if(document.getElementById("shape").value=="star"){
-                    decorationsStar4(x,y,sizes,0,iterations, "FFFFFF", 0);
-                }
-            }else if(type=="dendrites"){
-                for(i=0;i<iterations;i++){
-                    w=Math.floor(rand(w/5,w/3)); h=Math.floor(rand(h/3,h/2)); //Up to h*2 for crazy stuff
-                    sizes.push({"w":w,"h":h});
-                }
-                if(shape=="hexagon"){
-                    dendrites(x,y,sizes,0,iterations, "FFFFFF", 0);
-                }else if(shape=="star"){
-                    dendritesStar4(x,y,sizes,0,iterations, "FFFFFF", 0);
-                }
-            }
+            stellarStarN(x,y,sizes,0,iterations,5,"FFFFFF");
+
+            // if(document.getElementById("type").value=="random"){
+            //     p=Math.random();
+            //     if(p>0.5){
+            //         type="dendrites";
+            //     }else if (p>0.1){
+            //         type="stellar";
+            //     }else{
+            //         type="decorations";
+            //     }
+            // }else{
+            //     type=document.getElementById("type").value;
+            // }
+
+            // var shape;
+            // if(document.getElementById("shape").value=="random"){
+            //     p=Math.random();
+            //     if(p>0.5){
+            //         shape="hexagon";
+            //     }else{
+            //         shape="star";
+            //     }
+            // }else{
+            //     shape=document.getElementById("shape").value;
+            // }
+
+            // if(type=="stellar"){
+            //     for(i=0;i<iterations;i++){
+            //         w=Math.floor(rand(w/3,w/2)); h=Math.floor(rand(h/3,h/2));
+            //         sizes.push({"w":w,"h":h});
+            //     }
+            //     if(shape=="hexagon"){
+            //         stellar(x,y,sizes,0,iterations, "FFFFFF");
+            //     }else if(shape=="star"){
+            //         stellarStar4(x,y,sizes,0,iterations, "FFFFFF");
+            //     }
+            // }else if(type=="decorations"){
+            //     for(i=0;i<iterations;i++){
+            //         w=Math.floor(rand(w/10,w/5)); h=Math.floor(rand(h/3,h/2)); //Up to h*2 for crazy stuff
+            //         sizes.push({"w":w,"h":h});
+            //     }
+            //     if(shape=="hexagon"){
+            //         decorations(x,y,sizes,0,iterations, "FFFFFF", 0);
+            //     }else if(document.getElementById("shape").value=="star"){
+            //         decorationsStar4(x,y,sizes,0,iterations, "FFFFFF", 0);
+            //     }
+            // }else if(type=="dendrites"){
+            //     for(i=0;i<iterations;i++){
+            //         w=Math.floor(rand(w/5,w/3)); h=Math.floor(rand(h/3,h/2)); //Up to h*2 for crazy stuff
+            //         sizes.push({"w":w,"h":h});
+            //     }
+            //     if(shape=="hexagon"){
+            //         dendrites(x,y,sizes,0,iterations, "FFFFFF", 0);
+            //     }else if(shape=="star"){
+            //         dendritesStar4(x,y,sizes,0,iterations, "FFFFFF", 0);
+            //     }
+            // }
         }
 
         //Stellar
@@ -266,18 +272,44 @@ function createCrystal(initialW, initialH){
             ctx.fill();
         }
 
+        function stellarStarN(x,y,sizes,i,iterations,n,color){
+            var ctx=document.getElementById("canvas").getContext("2d");
+            if(i==iterations){return;}
+            i++;
+            
+            var w=sizes[i].w; var h=sizes[i].h;
+            drawStarN(x,y,w, h,n, "#"+parseInt(color,16).toString(16));
+            if(document.getElementById("colored").checked){
+                var nextColor=(parseInt(color,16)-parseInt("101000",16)).toString(16)
+            }else{
+                var nextColor="FFFFFF";
+            }
+            var rotation=360/(2*n);
+            var j=0;
+            if(iterations-i>0){
+                for(j;j<2*n;j++){
+                    ctx.save();
+                    ctx.translate(x, y);
+                    ctx.rotate(rotation*j*Math.PI/180);
+                    stellarStarN(0,-h*((j+1)%2),sizes,i,iterations,n,nextColor);
+                    ctx.restore();
+                }
+            }
+
+        }
+
         function drawStarN(x,y,w,h,n,color){
             var ctx=document.getElementById("canvas").getContext("2d");
             var rotation=360/n;
+            ctx.translate(x, y);
             for(i=0;i<n;i++){
-                ctx.translate(x, y);
                 ctx.rotate(rotation*Math.PI/180);
-                ctx.translate(-x, -y);
-                drawTriangle(x,y,w,h,color);
+                drawTriangle(0,0,w,h,color);
             }
+            ctx.translate(-x, -y);
         }
 
-        function drawTriangle(x,y,w,h,color){ //x,y on lower left corner
+        function drawTriangle(x,y,w,h,color){ //x,y on center of bottom side of triangle 
             var ctx=document.getElementById("canvas").getContext("2d");
             ctx.fillStyle=color;
             ctx.beginPath();
