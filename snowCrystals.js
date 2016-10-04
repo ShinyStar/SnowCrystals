@@ -9,12 +9,11 @@ function createCrystal(initialW, initialH){
 
             var iterations=document.getElementById("iterations").value;
 
-            var x=500, y=500, w=initialW, h=initialH; //Pretty random start pos
+            var x=500, y=500, w=initialW, h=initialH;
             var sizes=[]; sizes.push({"w":w, "h":h});
 
             var p;
             var type;
-
             if(document.getElementById("type").value=="random"){
                 p=Math.random();
                 if(p>0.5){
@@ -68,7 +67,7 @@ function createCrystal(initialW, initialH){
                 }
             }else if(type=="dendrites"){
                 for(i=0;i<iterations;i++){
-                    w=Math.floor(rand(w/5,w/3)); h=Math.floor(rand(h/3,h/2)); //Up to h*2 for crazy stuff
+                    w=Math.floor(rand(w/5,w/3)); h=Math.floor(rand(h/3,h/2));
                     sizes.push({"w":w,"h":h});
                 }
                 if(shape=="hexagon"){
@@ -86,7 +85,8 @@ function createCrystal(initialW, initialH){
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             var name=document.getElementById("name").value;
-            var type, shape, w=500, h=500, n=name.length%10, iterations=5, x=500, y=500;
+            name = name.replace(/\s/, '');
+            var type, shape, w=500, h=500, n=name.length%10, iterations=5, x=500, y=500;           
             name=name.toUpperCase();
             var code=Math.abs(hashCode(name));
             while(name.length<8){
@@ -113,11 +113,8 @@ function createCrystal(initialW, initialH){
                 if(hdiv==0){hdiv=1;}
                 w=w/wdiv;
                 h=h/hdiv;
-
                 sizes.push({"w":w,"h":h});
             }
-
-            console.log(type,shape,w,h,n,JSON.stringify(sizes))
 
             if(type=="stellar"){
                 if(shape=="hexagon"){
@@ -132,12 +129,19 @@ function createCrystal(initialW, initialH){
                     dendritesStarN(x,y,sizes,0,iterations,n,"FFFFFF",0);
                 }
             }
-
+            if(document.getElementById("showName").checked){
+                ctx.fillStyle="#5F5FFF";
+                ctx.textAlign="center";
+                ctx.textBaseline="middle"
+                ctx.font="30pt Verdana";
+                ctx.fillText(document.getElementById("name").value,x,y);
+                ctx.strokeStyle="#FFF";
+                ctx.strokeText(document.getElementById("name").value,x,y);
+            }
 
         }
 
 
-        //Stellar
         function stellar(x,y,sizes,i,iterations, color){
             if(i==iterations){return;}
             i++;
@@ -157,7 +161,7 @@ function createCrystal(initialW, initialH){
             stellar(x-w/2,y-h/4,sizes,i,iterations, nextColor);
         }
 
-        //Decorations (This is actually a buggy version of dendrites)
+        //This is actually a buggy version of dendrites but the result looked kinda nice
         function decorations(x,y,sizes,i,iterations, color, rotation){
             if(i==iterations){return;}
             i++;
@@ -231,7 +235,7 @@ function createCrystal(initialW, initialH){
             ctx.fill();
         }
 
-//Staaaaars!
+        //Staaaaars! :D
         function stellarStar4(x,y,sizes,i,iterations, color){
             if(i==iterations){return;}
             i++;
@@ -242,7 +246,6 @@ function createCrystal(initialW, initialH){
             }else{
                 var nextColor="FFFFFF";
             }
-            //All 6 vertices
             stellarStar4(x,y-h/2,sizes,i,iterations, nextColor);
             stellarStar4(x+w/6, y-h/6,sizes,i,iterations, nextColor);
             stellarStar4(x+w/2, y,sizes,i,iterations, nextColor);
@@ -331,6 +334,7 @@ function createCrystal(initialW, initialH){
             ctx.fill();
         }
 
+        //More stars! >u<
         function stellarStarN(x,y,sizes,i,iterations,n,color){
             var ctx=document.getElementById("canvas").getContext("2d");
             if(i==iterations){return;}
@@ -396,7 +400,7 @@ function createCrystal(initialW, initialH){
             ctx.translate(-x, -y);
         }
 
-        function drawTriangle(x,y,w,h,color){ //x,y on center of bottom side of triangle 
+        function drawTriangle(x,y,w,h,color){ //x,y on center of bottom side of triangle placed like this /_\
             var ctx=document.getElementById("canvas").getContext("2d");
             ctx.fillStyle=color;
             ctx.beginPath();
@@ -415,8 +419,8 @@ function createCrystal(initialW, initialH){
             var hash=0;
             for(i=0;i<s.length;i++){
                 code=s.charCodeAt(i);
-                hash=((hash<<5)-hash)+code;
-                hash=hash & hash;
+                hash=((hash<<5)-hash)+code; //*31+character
+                hash=hash & hash; //to 32bit
             }
             return hash;
         }
