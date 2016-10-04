@@ -52,7 +52,7 @@ function createCrystal(initialW, initialH){
                 }else if(shape=="star"){
                     stellarStar4(x,y,sizes,0,iterations, "FFFFFF");
                 }else if(shape=="starN"){
-                    stellarStarN(x,y,sizes,0,iterations,rand(2,20),"FFFFFF",0);
+                    stellarStarN(x,y,sizes,0,iterations,rand(2,20),"FFFFFF");
                 }
             }else if(type=="decorations"){
                 for(i=0;i<iterations;i++){
@@ -64,7 +64,7 @@ function createCrystal(initialW, initialH){
                 }else if(shape=="star"){
                     decorationsStar4(x,y,sizes,0,iterations, "FFFFFF", 0);
                 }else if(shape=="starN"){
-                    dendritesStarN(x,y,sizes,0,iterations,rand(2,20),"FFFFFF",0);
+                    dendritesStarN(x,y,sizes,0,iterations,rand(2,10),"FFFFFF",0);
                 }
             }else if(type=="dendrites"){
                 for(i=0;i<iterations;i++){
@@ -76,10 +76,66 @@ function createCrystal(initialW, initialH){
                 }else if(shape=="star"){
                     dendritesStar4(x,y,sizes,0,iterations, "FFFFFF", 0);
                 }else if(shape=="starN"){
-                    dendritesStarN(x,y,sizes,0,iterations,rand(2,20),"FFFFFF",0);
+                    dendritesStarN(x,y,sizes,0,iterations,rand(2,10),"FFFFFF",0);
                 }
             }
         }
+
+        function crystalFromName(){
+            var ctx=document.getElementById("canvas").getContext("2d");
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            var name=document.getElementById("name").value;
+            var type, shape, w=500, h=500, n=name.length%10, iterations=5, x=500, y=500;
+            name=name.toUpperCase();
+            var code=Math.abs(hashCode(name));
+            while(name.length<8){
+                name=name+name;
+            }
+            if (code%2==0){
+                type = "dendrites";
+            }else{
+                type = "stellar";
+            }
+            if (code%3==0){
+                shape = "hexagon";
+            }else{
+                shape = "star";
+            }
+            var sizes=[]; sizes.push({"w":w, "h":h});
+            var step;
+
+            for(i=0;i<iterations;i++){
+                w/=2; h/=2;
+                wdiv=Math.ceil(Math.abs((name.charCodeAt(i+1)-name.charCodeAt(i))/10));
+                hdiv=Math.ceil(Math.abs((name.charCodeAt(iterations-i-1)-name.charCodeAt(iterations-i))/10));
+                if(wdiv==0){wdiv=1;} //No dividing by zero, thanks
+                if(hdiv==0){hdiv=1;}
+                w=w/wdiv;
+                h=h/hdiv;
+
+                sizes.push({"w":w,"h":h});
+            }
+
+            console.log(type,shape,w,h,n,JSON.stringify(sizes))
+
+            if(type=="stellar"){
+                if(shape=="hexagon"){
+                    stellar(x,y,sizes,0,iterations, "FFFFFF");
+                }else if(shape=="star"){
+                    stellarStarN(x,y,sizes,0,iterations,n,"FFFFFF",0);
+                }
+            }else if(type=="dendrites"){
+                if(shape=="hexagon"){
+                    dendrites(x,y,sizes,0,iterations, "FFFFFF", 0);
+                }else if(shape=="star"){
+                    dendritesStarN(x,y,sizes,0,iterations,n,"FFFFFF",0);
+                }
+            }
+
+
+        }
+
 
         //Stellar
         function stellar(x,y,sizes,i,iterations, color){
@@ -323,7 +379,7 @@ function createCrystal(initialW, initialH){
                     ctx.save();
                     ctx.translate(x, y);
                     ctx.rotate(rotation*j*Math.PI/180);
-                    stellarStarN(0,-h*((j+1)%2),sizes,i,iterations,n,nextColor,rotation*j);
+                    stellarStarN(0,-h*((j+1)%2),sizes,i,iterations,n,nextColor, rotation*j);
                     ctx.restore();
                 }
             }
@@ -353,4 +409,14 @@ function createCrystal(initialW, initialH){
 
         function rand(a, b) {
             return a + Math.floor(Math.random() * (b - a + 1));
+        }
+
+        function hashCode(s){
+            var hash=0;
+            for(i=0;i<s.length;i++){
+                code=s.charCodeAt(i);
+                hash=((hash<<5)-hash)+code;
+                hash=hash & hash;
+            }
+            return hash;
         }
