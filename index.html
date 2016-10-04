@@ -40,7 +40,13 @@
         <br>
         <input type="checkbox" id="colored" checked>Colored</input>
         <br><br>
-        <button id="generate" onClick="createCrystal(900, 900)" style="width:200px;height:50px;font-size:1.5em;">Generate!</button>
+        <button id="generate" onClick="createCrystal(500, 500)" style="width:200px;height:50px;font-size:1.5em;">Generate!</button>
+        <br><br><br>
+        <b>Generate from Name</b><br>
+        <hr>
+        <input type="text" id="name" value="Name"><br>
+        <input type="checkbox" id="showName" checked>Show Name</input><br><br>
+        <button id="test" onClick="crystalFromName()" style="width:200px;height:50px;font-size:1.5em;">Generate!</button>
         <br>
     </div>
     <canvas id="canvas" width=1000 height=1000></canvas>
