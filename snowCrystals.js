@@ -99,6 +99,8 @@ function createCrystal(initialW, initialH){
             }
             if (code%3==0){
                 shape = "hexagon";
+            }else if(code%3==2){
+                shape = "star4";
             }else{
                 shape = "star";
             }
@@ -121,12 +123,16 @@ function createCrystal(initialW, initialH){
                     stellar(x,y,sizes,0,iterations, "FFFFFF");
                 }else if(shape=="star"){
                     stellarStarN(x,y,sizes,0,iterations,n,"FFFFFF",0);
+                }else if(shape=="star4"){
+                    stellarStar4(x,y,sizes,0,iterations,"FFFFFF",0);
                 }
             }else if(type=="dendrites"){
                 if(shape=="hexagon"){
                     dendrites(x,y,sizes,0,iterations, "FFFFFF", 0);
                 }else if(shape=="star"){
                     dendritesStarN(x,y,sizes,0,iterations,n,"FFFFFF",0);
+                }else if(shape=="star4"){
+                    dendritesStar4(x,y,sizes,0,iterations,"FFFFFF",0);
                 }
             }
             if(document.getElementById("showName").checked){
